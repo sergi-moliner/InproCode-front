@@ -25,3 +25,18 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Preguntas para definir proyecto:
+
+·MySQL o MongoDB(x)
+·Patentado? Es necesario? Precios?
+·Politicas de privacidad de datos LOPD
+·Eventos para calendario
+·Que poner en mapa? asociaciones? tiendas? galerias? espacios expositivos?
+·Graficas de datos: tipos de usuarios? tipos de arte? 
+
+
+·Que poner en base de datos:
+-Tipo de usuarios? Diferenciados? Tienen los mismos inputs?
+-Usuario artista y usuario espacio? tipos de inputs de cada
+-Datos de la misma web

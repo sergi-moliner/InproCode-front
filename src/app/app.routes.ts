@@ -10,5 +10,5 @@ export const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'graphics', component: GraphicsComponent },
-
+  { path: '**', redirectTo: 'home' } //ultima ruta
 ];
