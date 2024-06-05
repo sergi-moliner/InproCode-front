@@ -1,22 +1,25 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import * as Mapboxgl from 'mapbox-gl';
 import { MarkersService } from '../../services/mapbox.service';
 import { Marker } from '../../interfaces/markers.interface';
 import { setMapboxToken } from '../../utils/mapbox-config';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-map',
   standalone: true,
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [HttpClientModule],
+  imports: [HttpClientModule, FormsModule],
 })
 export class MapComponent implements OnInit {
   map!: Mapboxgl.Map;
   predefinedMarkers: Mapboxgl.Marker[] = [];
   allMarkers: Marker[] = [];
+  categories: string[] = ['italian', 'chinese', 'japanese', 'mexican'];
+  selectedCategory: string = 'all';
 
   constructor(
     private _markerService: MarkersService,
@@ -36,7 +39,7 @@ export class MapComponent implements OnInit {
     this.map = new Mapboxgl.Map({
       container: 'mapa',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [2.1734, 41.3851],
+      center: [2.1734, 41.3851], // Centrado en Barcelona
       zoom: 12,
     });
   }
@@ -51,6 +54,27 @@ export class MapComponent implements OnInit {
         console.error('Error loading predefined markers:', error);
       }
     });
+  }
+
+  filterMarkersByCategory() {
+    if (this.selectedCategory === 'all') {
+      this.loadPredefinedMarkers();
+    } else {
+      this._markerService.getMarkersByCategory(this.selectedCategory).subscribe({
+        next: (markers) => {
+          this.clearMarkers();
+          this.displayMarkers(markers);
+        },
+        error: (error) => {
+          console.error('Error loading markers by category:', error);
+        }
+      });
+    }
+  }
+
+  clearMarkers() {
+    this.predefinedMarkers.forEach(marker => marker.remove());
+    this.predefinedMarkers = [];
   }
 
   displayMarkers(markers: Marker[]) {

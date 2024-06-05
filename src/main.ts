@@ -8,6 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 
 
 import { environment } from './environments/environment';
+import { NgModel } from '@angular/forms';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -20,6 +21,7 @@ bootstrapApplication(AppComponent, {
       progressBar: true
     }),
     provideHttpClient(),
+
  ]
 })
   .catch((err) => console.error(err));

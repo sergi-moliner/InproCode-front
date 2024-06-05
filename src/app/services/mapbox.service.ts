@@ -15,6 +15,10 @@ export class MarkersService {
     return this.http.get<Marker[]>(this.apiUrl);
   }
 
+  getMarkersByCategory(category: string): Observable<Marker[]> {
+    return this.http.get<Marker[]>(`${this.apiUrl}/category/${category}`);
+  }
+
   createMarker(marker: Marker): Observable<Marker> {
     return this.http.post<Marker>(this.apiUrl, marker);
   }
@@ -23,3 +27,4 @@ export class MarkersService {
     return this.http.delete<void>(this.apiUrl);
   }
 }
+
