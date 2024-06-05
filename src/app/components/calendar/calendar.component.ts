@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarOptions, EventClickArg  } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarModule, FullCalendarComponent } from '@fullcalendar/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 import * as bootstrap from 'bootstrap';
 import { EventService } from '../../services/event.service';
-import { FullCalendarComponent } from '@fullcalendar/angular';
-import { ViewChild } from '@angular/core';
-
-
-
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -20,12 +15,12 @@ import { ViewChild } from '@angular/core';
   styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit {
-  @ViewChild('calendar') calendarComponent!: FullCalendarComponent; // Referencia al componente FullCalendar
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
   calendarOptions: CalendarOptions;
   eventForm: FormGroup;
   selectedEvent: any = null;
   modalTitle: string = '';
-  predefinedColors: string[] = ['#3788d8', '#d83737', '#37d889', '#d8a537', '#8a37d8']; // Colores predefinidos
+  predefinedColors: string[] = ['#3788d8', '#d83737', '#37d889', '#d8a537', '#8a37d8'];
 
   constructor(private fb: FormBuilder, private eventService: EventService) {
     this.calendarOptions = {
@@ -43,7 +38,7 @@ export class CalendarComponent implements OnInit {
     this.eventForm = this.fb.group({
       title: ['', Validators.required],
       date: ['', Validators.required],
-      color: [this.predefinedColors[0], Validators.required] // Color predeterminado
+      color: [this.predefinedColors[0], Validators.required]
     });
   }
 
@@ -53,7 +48,7 @@ export class CalendarComponent implements OnInit {
     this.eventService.getEvents().subscribe({
       next: (events) => {
         successCallback(events.map(event => ({
-          id: String(event.id), // Convertir el ID a cadena
+          id: String(event.id),
           title: event.title,
           start: event.date,
           backgroundColor: event.color
@@ -68,7 +63,7 @@ export class CalendarComponent implements OnInit {
 
   openModalForNewEvent() {
     this.eventForm.reset();
-    this.eventForm.patchValue({ color: this.predefinedColors[0] }); // Color predeterminado
+    this.eventForm.patchValue({ color: this.predefinedColors[0] });
     this.selectedEvent = null;
     this.modalTitle = 'Add Event';
     const modalElement = document.getElementById('eventModal');
@@ -124,7 +119,7 @@ export class CalendarComponent implements OnInit {
         });
       } else {
         const newEvent = {
-          id: String(new Date().getTime()), // Convertir el ID a cadena
+          id: String(new Date().getTime()),
           title: this.eventForm.value.title,
           date: this.eventForm.value.date,
           color: this.eventForm.value.color
@@ -133,7 +128,7 @@ export class CalendarComponent implements OnInit {
         this.eventService.createEvent(newEvent).subscribe({
           next: (event) => {
             calendarApi?.addEvent({
-              id: String(event.id), // Convertir el ID a cadena
+              id: String(event.id),
               title: event.title,
               start: event.date,
               allDay: true,

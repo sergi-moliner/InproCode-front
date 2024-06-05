@@ -1,9 +1,11 @@
 <div class="container mt-4">
-  <button class="btn btn-primary mb-3" (click)="openModalForNewEvent()">Add Event</button>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Calendar</h2>
+    <button class="btn btn-primary" (click)="openModalForNewEvent()">Add Event</button>
+  </div>
   <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
