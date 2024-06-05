@@ -10,9 +10,9 @@ import { FormsModule, NgModel } from '@angular/forms';
 @Component({
   selector: 'app-map',
   standalone: true,
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
   imports: [HttpClientModule, FormsModule],
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
   map!: Mapboxgl.Map;

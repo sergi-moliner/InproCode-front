@@ -1,1 +1,70 @@
-<p>calendar works!</p>
+<div class="container mt-4">
+  <button class="btn btn-primary mb-3" (click)="openModalForNewEvent()">Add Event</button>
+  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">{{ modalTitle }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="eventForm">
+          <div class="mb-3">
+            <label for="eventTitle" class="form-label">Event Title</label>
+            <input type="text" class="form-control" id="eventTitle" formControlName="title">
+            @if(eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
+              <div class="text-danger">
+                Title is required
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label for="eventDate" class="form-label">Event Date</label>
+            <input type="date" class="form-control" id="eventDate" formControlName="date">
+            @if(eventForm.get('date')?.invalid && eventForm.get('date')?.touched) {
+              <div class="text-danger">
+                Date is required
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Color</label>
+            <div class="d-flex justify-content-between">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="predefinedColors[0]" formControlName="color" id="color1">
+                <label class="form-check-label" for="color1" [style.backgroundColor]="predefinedColors[0]" style="padding: 5px 10px; border-radius: 5px;"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="predefinedColors[1]" formControlName="color" id="color2">
+                <label class="form-check-label" for="color2" [style.backgroundColor]="predefinedColors[1]" style="padding: 5px 10px; border-radius: 5px;"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="predefinedColors[2]" formControlName="color" id="color3">
+                <label class="form-check-label" for="color3" [style.backgroundColor]="predefinedColors[2]" style="padding: 5px 10px; border-radius: 5px;"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="predefinedColors[3]" formControlName="color" id="color4">
+                <label class="form-check-label" for="color4" [style.backgroundColor]="predefinedColors[3]" style="padding: 5px 10px; border-radius: 5px;"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="predefinedColors[4]" formControlName="color" id="color5">
+                <label class="form-check-label" for="color5" [style.backgroundColor]="predefinedColors[4]" style="padding: 5px 10px; border-radius: 5px;"></label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveEvent()">Save changes</button>
+        @if(selectedEvent) {
+          <button type="button" class="btn btn-danger" (click)="deleteEvent()">Delete</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
