@@ -1,11 +1,9 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Calendar</h2>
-    <button class="btn btn-primary" (click)="openModalForNewEvent()">Add Event</button>
-  </div>
+  <button class="btn btn-primary mb-3" (click)="openModalForNewEvent()">Add Event</button>
   <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>
 
+<!-- Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -30,6 +28,15 @@
             @if(eventForm.get('date')?.invalid && eventForm.get('date')?.touched) {
               <div class="text-danger">
                 Date is required
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label for="eventType" class="form-label">Event Type</label>
+            <input type="text" class="form-control" id="eventType" formControlName="type">
+            @if(eventForm.get('type')?.invalid && eventForm.get('type')?.touched) {
+              <div class="text-danger">
+                Type is required
               </div>
             }
           </div>

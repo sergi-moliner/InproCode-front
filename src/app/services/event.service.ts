@@ -7,7 +7,7 @@ import { Event } from '../interfaces/event.interface';
   providedIn: 'root'
 })
 export class EventService {
-  private apiUrl = 'http://localhost:3000/api/events';
+  private apiUrl = 'http://localhost:3000/api/events'; // URL de tu API
 
   constructor(private http: HttpClient) {}
 
@@ -27,3 +27,4 @@ export class EventService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+
