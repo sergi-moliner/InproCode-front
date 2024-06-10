@@ -1,11 +1,12 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import * as Mapboxgl from 'mapbox-gl';
 import { MarkersService } from '../../services/mapbox.service';
 import { Marker } from '../../interfaces/markers.interface';
+import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment.development';
 import { setMapboxToken } from '../../utils/mapbox-config';
-import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-map',
@@ -18,7 +19,7 @@ export class MapComponent implements OnInit {
   map!: Mapboxgl.Map;
   predefinedMarkers: Mapboxgl.Marker[] = [];
   allMarkers: Marker[] = [];
-  categories: string[] = ['italian', 'chinese', 'japanese', 'mexican'];
+  categories: string[] = ['Gallery', 'Hotel', 'Bar', 'Restaurant', 'Community center'];
   selectedCategory: string = 'all';
 
   constructor(
@@ -34,15 +35,16 @@ export class MapComponent implements OnInit {
   }
 
   initializeMap(): void {
-    setMapboxToken('pk.eyJ1Ijoic2VyMTIyIiwiYSI6ImNseDBvZGV3ZTAybHAyanM5eXg3dGpsdXQifQ.o8iVw03nDw99AymVVgjRnw');
+    setMapboxToken(environment.mapboxToken);
 
     this.map = new Mapboxgl.Map({
       container: 'mapa',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [2.1734, 41.3851], // Centrado en Barcelona
+      center: [2.1734, 41.3851],
       zoom: 12,
     });
   }
+
 
   loadPredefinedMarkers() {
     this._markerService.getMarkers().subscribe({

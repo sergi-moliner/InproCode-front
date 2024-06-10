@@ -8,7 +8,6 @@ import { Event } from '../../interfaces/event.interface';
 import { Marker } from '../../interfaces/markers.interface';
 import { HttpClientModule } from '@angular/common/http';
 
-
 Chart.register(...registerables);
 
 @Component({
@@ -29,6 +28,8 @@ export class GraphicsComponent implements OnInit {
   eventTypeCounts: number[] = [];
   markerCategories: string[] = [];
   markerCategoryCounts: number[] = [];
+  userLocations: string[] = [];
+  userLocationCounts: number[] = [];
 
   constructor(
     private userService: UserService,
@@ -40,6 +41,7 @@ export class GraphicsComponent implements OnInit {
     this.getUserData();
     this.getEventData();
     this.getMarkerData();
+    this.getUserLocationData();
   }
 
   getUserData() {
@@ -90,6 +92,22 @@ export class GraphicsComponent implements OnInit {
     });
   }
 
+  getUserLocationData() {
+    this.userService.getListUsers().subscribe(users => {
+      this.users = users;
+      const locationCounts: { [key: string]: number } = {};
+      users.forEach(user => {
+        if (!locationCounts[user.location]) {
+          locationCounts[user.location] = 0;
+        }
+        locationCounts[user.location]++;
+      });
+      this.userLocations = Object.keys(locationCounts);
+      this.userLocationCounts = Object.values(locationCounts);
+      this.renderPieChart(this.userLocations, this.userLocationCounts, 'userLocationChart', 'User Locations');
+    });
+  }
+
   renderDoughnutChart(labels: string[], data: number[], chartId: string, chartLabel: string) {
     const canvasElement = document.getElementById(chartId) as HTMLCanvasElement;
     if (canvasElement) {
@@ -103,7 +121,6 @@ export class GraphicsComponent implements OnInit {
               label: chartLabel,
               data: data,
               backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-              hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
             }]
           },
           options: {
@@ -159,7 +176,7 @@ export class GraphicsComponent implements OnInit {
               y: {
                 beginAtZero: true,
                 ticks: {
-                  stepSize: 1 // Asegura que los valores en el eje y sean enteros
+                  stepSize: 1
                 }
               }
             }
@@ -204,8 +221,44 @@ export class GraphicsComponent implements OnInit {
             scales: {
               r: {
                 ticks: {
-                  stepSize: 1 // Asegura que los valores en el eje radial sean enteros
+                  stepSize: 1
                 }
+              }
+            }
+          }
+        });
+      } else {
+        console.error(`Failed to get 2D context for canvas element with id ${chartId}`);
+      }
+    } else {
+      console.error(`Canvas element with id ${chartId} not found`);
+    }
+  }
+
+  renderPieChart(labels: string[], data: number[], chartId: string, chartLabel: string) {
+    const canvasElement = document.getElementById(chartId) as HTMLCanvasElement;
+    if (canvasElement) {
+      const ctx = canvasElement.getContext('2d');
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: chartLabel,
+              data: data,
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: chartLabel
               }
             }
           }

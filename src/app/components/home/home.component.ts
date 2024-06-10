@@ -8,8 +8,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProgressBarComponent } from '../../shared/progress-bar/progress-bar.component';
 import { ToastrService } from 'ngx-toastr';
 import { RouterModule } from '@angular/router';
-import { get } from 'mongoose';
-
 
 @Component({
   selector: 'app-home',
