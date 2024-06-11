@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CalendarOptions, EventClickArg  } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { EventService } from '../../services/event.service';
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [ FullCalendarModule, ReactiveFormsModule ],
+  imports: [FullCalendarModule, ReactiveFormsModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
@@ -37,10 +37,26 @@ export class CalendarComponent implements OnInit {
     };
 
     this.eventForm = this.fb.group({
-      title: ['', Validators.required],
+      title: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+          Validators.pattern('^[a-zA-Z ]*$')
+        ])
+      ],
       date: ['', Validators.required],
       color: [this.predefinedColors[0], Validators.required],
-      type: ['', Validators.required] // Añadir tipo de evento
+      type: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+          Validators.pattern('^[a-zA-Z ]*$')
+        ])
+      ],
     });
   }
 
@@ -49,18 +65,20 @@ export class CalendarComponent implements OnInit {
   fetchEvents(info: any, successCallback: any, failureCallback: any) {
     this.eventService.getEvents().subscribe({
       next: (events) => {
-        successCallback(events.map(event => ({
-          id: String(event.id),
-          title: event.title,
-          start: event.date,
-          backgroundColor: event.color,
-          type: event.type // Incluir tipo de evento
-        })));
+        successCallback(
+          events.map((event) => ({
+            id: String(event.id),
+            title: event.title,
+            start: event.date,
+            backgroundColor: event.color,
+            type: event.type,
+          }))
+        );
       },
       error: (error) => {
         console.error('Error fetching events', error);
         failureCallback(error);
-      }
+      },
     });
   }
 
@@ -78,11 +96,14 @@ export class CalendarComponent implements OnInit {
 
   handleEventClick(clickInfo: EventClickArg) {
     this.selectedEvent = clickInfo.event;
+    const eventDate = new Date(clickInfo.event.startStr);
+    const formattedDate = eventDate.toISOString().substring(0, 10);
+
     this.eventForm.setValue({
       title: clickInfo.event.title,
-      date: clickInfo.event.startStr,
+      date: formattedDate,
       color: clickInfo.event.backgroundColor || this.predefinedColors[0],
-      type: clickInfo.event.extendedProps['type'] || '' // Obtener tipo de evento
+      type: clickInfo.event.extendedProps['type'] || '',
     });
     this.modalTitle = 'Edit Event';
     const modalElement = document.getElementById('eventModal');
@@ -94,15 +115,19 @@ export class CalendarComponent implements OnInit {
 
   handleEventChange(changeInfo: any) {
     const event = changeInfo.event;
-    this.eventService.updateEvent(Number(event.id), {
-      title: event.title,
-      date: event.start,
-      color: event.backgroundColor,
-      type: event.extendedProps['type'] || '' // Incluir tipo de evento
-    }).subscribe({
-      next: () => console.log('Event updated'),
-      error: (error) => console.error('Error updating event', error)
-    });
+    this.eventService
+      .updateEvent(Number(event.id), {
+        title: event.title,
+        date: event.start?.toISOString() || '',
+        color: event.backgroundColor,
+        type: event.extendedProps['type'] || '',
+      })
+      .subscribe({
+        next: () => {
+          this.refetchEvents();
+        },
+        error: (error) => console.error('Error updating event', error),
+      });
   }
 
   saveEvent() {
@@ -111,26 +136,30 @@ export class CalendarComponent implements OnInit {
 
       if (this.selectedEvent) {
         this.selectedEvent.setProp('title', this.eventForm.value.title);
-        this.selectedEvent.setStart(this.eventForm.value.date);
+        this.selectedEvent.setStart(new Date(this.eventForm.value.date).toISOString());
         this.selectedEvent.setProp('backgroundColor', this.eventForm.value.color);
-        this.selectedEvent.setExtendedProp('type', this.eventForm.value.type); // Establecer tipo de evento
+        this.selectedEvent.setExtendedProp('type', this.eventForm.value.type);
 
-        this.eventService.updateEvent(Number(this.selectedEvent.id), {
-          title: this.eventForm.value.title,
-          date: this.eventForm.value.date,
-          color: this.eventForm.value.color,
-          type: this.eventForm.value.type // Incluir tipo de evento
-        }).subscribe({
-          next: () => console.log('Event updated'),
-          error: (error) => console.error('Error updating event', error)
-        });
+        this.eventService
+          .updateEvent(Number(this.selectedEvent.id), {
+            title: this.eventForm.value.title,
+            date: new Date(this.eventForm.value.date).toISOString(),
+            color: this.eventForm.value.color,
+            type: this.eventForm.value.type,
+          })
+          .subscribe({
+            next: () => {
+              this.refetchEvents();
+            },
+            error: (error) => console.error('Error updating event', error),
+          });
       } else {
         const newEvent = {
           id: String(new Date().getTime()),
           title: this.eventForm.value.title,
-          date: this.eventForm.value.date,
+          date: new Date(this.eventForm.value.date).toISOString(),
           color: this.eventForm.value.color,
-          type: this.eventForm.value.type // Incluir tipo de evento
+          type: this.eventForm.value.type,
         };
 
         this.eventService.createEvent(newEvent).subscribe({
@@ -142,11 +171,12 @@ export class CalendarComponent implements OnInit {
               allDay: true,
               backgroundColor: event.color,
               extendedProps: {
-                type: event.type // Incluir tipo de evento
-              }
+                type: event.type,
+              },
             });
+            
           },
-          error: (error) => console.error('Error creating event', error)
+          error: (error) => console.error('Error creating event', error),
         });
       }
 
@@ -158,7 +188,7 @@ export class CalendarComponent implements OnInit {
         }
       }
     } else {
-      alert('All fields are required');
+      alert('All fields are required and must follow the validation rules');
     }
   }
 
@@ -168,6 +198,7 @@ export class CalendarComponent implements OnInit {
         this.eventService.deleteEvent(Number(this.selectedEvent.id)).subscribe({
           next: () => {
             this.selectedEvent.remove();
+            this.refetchEvents();
             const modalElement = document.getElementById('eventModal');
             if (modalElement) {
               const modal = bootstrap.Modal.getInstance(modalElement);
@@ -176,9 +207,14 @@ export class CalendarComponent implements OnInit {
               }
             }
           },
-          error: (error) => console.error('Error deleting event', error)
+          error: (error) => console.error('Error deleting event', error),
         });
       }
     }
+  }
+
+  refetchEvents() {
+    const calendarApi = this.calendarComponent.getApi();
+    calendarApi.refetchEvents();
   }
 }

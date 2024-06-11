@@ -54,7 +54,18 @@
             <input type="text" id="name" formControlName="name" class="form-control">
             @if(userForm.get('name')?.invalid && userForm.get('name')?.touched) {
               <div class="text-danger">
-                Name is required.
+                @if(userForm.get('name')?.errors?.['required']) {
+                  Name is required.
+                }
+                @if(userForm.get('name')?.errors?.['minlength']) {
+                  Minimum 3 characters required.
+                }
+                @if(userForm.get('name')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed.
+                }
+                @if(userForm.get('name')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed.
+                }
               </div>
             }
           </div>
@@ -90,7 +101,18 @@
             <input type="text" id="location" formControlName="location" class="form-control">
             @if(userForm.get('location')?.invalid && userForm.get('location')?.touched) {
               <div class="text-danger">
-                Location is required.
+                @if(userForm.get('location')?.errors?.['required']) {
+                  Location is required.
+                }
+                @if(userForm.get('location')?.errors?.['minlength']) {
+                  Minimum 3 characters required.
+                }
+                @if(userForm.get('location')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed.
+                }
+                @if(userForm.get('location')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed.
+                }
               </div>
             }
           </div>

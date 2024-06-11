@@ -18,7 +18,18 @@
             <input type="text" class="form-control" id="eventTitle" formControlName="title">
             @if(eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
               <div class="text-danger">
-                Title is required
+                @if(eventForm.get('title')?.errors?.['required']) {
+                  Title is required
+                }
+                @if(eventForm.get('title')?.errors?.['minlength']) {
+                  Minimum 3 characters required
+                }
+                @if(eventForm.get('title')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed
+                }
+                @if(eventForm.get('title')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed
+                }
               </div>
             }
           </div>
@@ -27,7 +38,9 @@
             <input type="date" class="form-control" id="eventDate" formControlName="date">
             @if(eventForm.get('date')?.invalid && eventForm.get('date')?.touched) {
               <div class="text-danger">
-                Date is required
+                @if(eventForm.get('date')?.errors?.['required']) {
+                  Date is required
+                }
               </div>
             }
           </div>
@@ -36,33 +49,30 @@
             <input type="text" class="form-control" id="eventType" formControlName="type">
             @if(eventForm.get('type')?.invalid && eventForm.get('type')?.touched) {
               <div class="text-danger">
-                Type is required
+                @if(eventForm.get('type')?.errors?.['required']) {
+                  Type is required
+                }
+                @if(eventForm.get('type')?.errors?.['minlength']) {
+                  Minimum 3 characters required
+                }
+                @if(eventForm.get('type')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed
+                }
+                @if(eventForm.get('type')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed
+                }
               </div>
             }
           </div>
           <div class="mb-3">
             <label class="form-label">Event Color</label>
             <div class="d-flex justify-content-between">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" [value]="predefinedColors[0]" formControlName="color" id="color1">
-                <label class="form-check-label" for="color1" [style.backgroundColor]="predefinedColors[0]" style="padding: 5px 10px; border-radius: 5px;"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" [value]="predefinedColors[1]" formControlName="color" id="color2">
-                <label class="form-check-label" for="color2" [style.backgroundColor]="predefinedColors[1]" style="padding: 5px 10px; border-radius: 5px;"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" [value]="predefinedColors[2]" formControlName="color" id="color3">
-                <label class="form-check-label" for="color3" [style.backgroundColor]="predefinedColors[2]" style="padding: 5px 10px; border-radius: 5px;"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" [value]="predefinedColors[3]" formControlName="color" id="color4">
-                <label class="form-check-label" for="color4" [style.backgroundColor]="predefinedColors[3]" style="padding: 5px 10px; border-radius: 5px;"></label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" [value]="predefinedColors[4]" formControlName="color" id="color5">
-                <label class="form-check-label" for="color5" [style.backgroundColor]="predefinedColors[4]" style="padding: 5px 10px; border-radius: 5px;"></label>
-              </div>
+              @for(color of predefinedColors; track color) {
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" [value]="color" formControlName="color" [id]="'color'">
+                  <label class="form-check-label" [for]="'color'" [style.backgroundColor]="color" style="padding: 5px 10px; border-radius: 5px;"></label>
+                </div>
+              }
             </div>
           </div>
         </form>

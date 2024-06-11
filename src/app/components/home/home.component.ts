@@ -19,19 +19,17 @@ import { RouterModule } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   listUsers: User[] = [];
-
   loading: boolean = false;
-
   userForm: FormGroup;
   isEditMode: boolean = false;
 
   constructor(private fb: FormBuilder, private _userService: UserService, private toastr: ToastrService) {
     this.userForm = this.fb.group({
       id: [0],
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern('^[a-zA-Z ]*$')]],
       email: ['', [Validators.required, Validators.email]],
       type: ['', Validators.required],
-      location: ['', Validators.required]
+      location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern('^[a-zA-Z ]*$')]],
     });
   }
 
@@ -42,7 +40,6 @@ export class HomeComponent implements OnInit {
   getListsUsers(): void {
     this.loading = true;
     this._userService.getListUsers().subscribe((data: User[]) => {
-      console.log(data);
       this.listUsers = data;
       this.loading = false;
     });
@@ -85,18 +82,14 @@ export class HomeComponent implements OnInit {
             modal.hide();
           }
         }
-
       }
     } else {
-
-      this.listUsers.push(user);
       this._userService.saveUser(user).subscribe(() => {
         this.toastr.success('User saved successfully', 'User saved');
+        this.getListsUsers();
       });
-
     }
     this.userForm.reset({ id: 0 });
-    this.getListsUsers();
   }
 
   deleteUser(userId: number | undefined): void {

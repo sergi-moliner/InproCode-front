@@ -5,15 +5,16 @@ Welcome to the InproCode project repository. This project is split into two main
 - **Frontend**: Angular 17 application with Mapbox, FullCalendar, and Chart.js.
 - **Backend**: Node.js (Express) server with a MySQL database.
 
-çThis project showcases an Angular 17 standalone application that integrates a Mapbox map, FullCalendar for event management, and Chart.js for data visualization. It is connected to a backend server for fetching and storing data, making it a complete full-stack application.
+This project showcases an Angular 17 standalone application that integrates a Mapbox map, FullCalendar for event management, and Chart.js for data visualization. It is connected to a backend server for fetching and storing data, making it a complete full-stack application.
 
 ## 📋 Prerequisites
 
 Ensure you have the following installed:
 
-·Node.js (v16.x or later)
-·npm (v7.x or later)
-·Angular CLI (v17.x or later)
+- Node.js (v16.x or later)
+- npm (v7.x or later)
+- Angular CLI (v17.x or later)
+- MySQL (v8.x or later)
 
 ## 📂 Repository Structure
 
@@ -48,7 +49,15 @@ Please clone each repository and follow the specific instructions provided below
     PORT=3000
     ```
 
-4. Run the backend server:
+4. Import the provided SQL file to set up the database schema and initial data:
+    ```bash
+    mysql -u your-username -p your-database-name < path/to/your-database-file.sql
+    ```
+    - Replace `your-username` with your MySQL username.
+    - Replace `your-database-name` with the name of the database you created.
+    - Replace `path/to/your-database-file.sql` with the relative path to the SQL file in the repository.
+
+5. Run the backend server:
     ```bash
     npm start
     ```
@@ -113,3 +122,19 @@ Please clone each repository and follow the specific instructions provided below
 ### Chart.js
 
 - Visualize data with different types of charts (bar, line, radar, etc.).
+
+## Database Configuration
+
+The database configuration is located in `src/db/connection.ts` in the backend repository:
+
+```typescript
+const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize('inprocode', 'root', 'yourpassword', {
+    host: 'localhost',
+    dialect: 'mysql'
+});
+
+export default sequelize;
+```
+Replace 'yourpassword' with your actual MySQL password.
