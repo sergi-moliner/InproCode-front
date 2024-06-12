@@ -1,0 +1,89 @@
+<div class="container mt-4">
+  <button class="btn btn-primary mb-3" (click)="openModalForNewEvent()">Add Event</button>
+  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">{{ modalTitle }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="eventForm">
+          <div class="mb-3">
+            <label for="eventTitle" class="form-label">Event Title</label>
+            <input type="text" class="form-control" id="eventTitle" formControlName="title">
+            @if(eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
+              <div class="text-danger">
+                @if(eventForm.get('title')?.errors?.['required']) {
+                  Title is required
+                }
+                @if(eventForm.get('title')?.errors?.['minlength']) {
+                  Minimum 3 characters required
+                }
+                @if(eventForm.get('title')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed
+                }
+                @if(eventForm.get('title')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed
+                }
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label for="eventDate" class="form-label">Event Date</label>
+            <input type="date" class="form-control" id="eventDate" formControlName="date">
+            @if(eventForm.get('date')?.invalid && eventForm.get('date')?.touched) {
+              <div class="text-danger">
+                @if(eventForm.get('date')?.errors?.['required']) {
+                  Date is required
+                }
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label for="eventType" class="form-label">Event Type</label>
+            <input type="text" class="form-control" id="eventType" formControlName="type">
+            @if(eventForm.get('type')?.invalid && eventForm.get('type')?.touched) {
+              <div class="text-danger">
+                @if(eventForm.get('type')?.errors?.['required']) {
+                  Type is required
+                }
+                @if(eventForm.get('type')?.errors?.['minlength']) {
+                  Minimum 3 characters required
+                }
+                @if(eventForm.get('type')?.errors?.['maxlength']) {
+                  Maximum 20 characters allowed
+                }
+                @if(eventForm.get('type')?.errors?.['pattern']) {
+                  Only alphabetic characters allowed
+                }
+              </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Color</label>
+            <div class="d-flex justify-content-between">
+              @for(color of predefinedColors; track color) {
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" [value]="color" formControlName="color" [id]="'color'">
+                  <label class="form-check-label" [for]="'color'" [style.backgroundColor]="color" style="padding: 5px 10px; border-radius: 5px;"></label>
+                </div>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveEvent()">Save changes</button>
+        @if(selectedEvent) {
+          <button type="button" class="btn btn-danger" (click)="deleteEvent()">Delete</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
